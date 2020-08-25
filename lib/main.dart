@@ -27,29 +27,29 @@ Future<void> main() async {
     port.sendPort,
     isolateName,
   );
-  runApp(AlarmManagerExampleApp());
+  runApp(WakeStandStretchApp());
 }
 
-class AlarmManagerExampleApp extends StatelessWidget {
+class WakeStandStretchApp extends StatelessWidget {
 // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      home: _AlarmHomePage(title: 'Flutter Demo Home Page'),
+      title: 'Wake Stand Stretch',
+      home: _HomePage(title: 'Wake Stand Stretch'),
     );
   }
 }
 
-class _AlarmHomePage extends StatefulWidget {
-  _AlarmHomePage({Key key, this.title}) : super(key: key);
+class _HomePage extends StatefulWidget {
+  _HomePage({Key key, this.title}) : super(key: key);
   final String title;
 
   @override
-  _AlarmHomePageState createState() => _AlarmHomePageState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _AlarmHomePageState extends State<_AlarmHomePage> {
+class _HomePageState extends State<_HomePage> {
 
   @override
   void initState() {
@@ -82,7 +82,7 @@ class _AlarmHomePageState extends State<_AlarmHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              "Goog Morning!",
+              "Good Morning!",
               style: textStyle,
             ),
             RaisedButton(
@@ -93,7 +93,7 @@ class _AlarmHomePageState extends State<_AlarmHomePage> {
               onPressed: () async {
                 await AndroidAlarmManager.oneShot(
                   const Duration(seconds: 10),
-// Ensure we have a unique alarm ID.
+                  // Ensure we have a unique alarm ID.
                   Random().nextInt(pow(2, 31)),
                   callback,
                   exact: true,
