@@ -28,6 +28,12 @@ Future<void> main() async {
     port.sendPort,
     isolateName,
   );
+  _readAlarmTime() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    var data = pref.getString("alarmTime");
+    return DateTime.parse(data);
+  }
+  print(await _readAlarmTime());
   runApp(WakeStandStretchApp());
 }
 
@@ -59,7 +65,6 @@ class _HomePageState extends State<_HomePage> {
   void initState() {
     super.initState();
     AndroidAlarmManager.initialize();
-
   }
 
 // The background
@@ -72,6 +77,11 @@ class _HomePageState extends State<_HomePage> {
 // This will be null if we're running in the background.
     uiSendPort ??= IsolateNameServer.lookupPortByName(isolateName);
     uiSendPort?.send(null);
+  }
+
+  _saveAlarmTime(String datetime) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.setString("alarmTime", datetime);
   }
 
   @override
@@ -99,14 +109,17 @@ class _HomePageState extends State<_HomePage> {
                 var _hour = int.parse(_hourController.text);
                 var _minute = int.parse(_minuteController.text);
 
+                var _alarmTime = DateTime(2020, 8, _day, _hour, _minute);
+
                 await AndroidAlarmManager.oneShotAt(
-                  DateTime(2020, 8, _day, _hour, _minute),
+                  _alarmTime,
                   // Ensure we have a unique alarm ID.
                   Random().nextInt(pow(2, 31)),
                   callback,
                   exact: true,
                   wakeup: true,
                 );
+                _saveAlarmTime(_alarmTime.toString());
               },
             ),
             TextFormField(
