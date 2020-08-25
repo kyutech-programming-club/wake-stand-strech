@@ -9,6 +9,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:android_alarm_manager/android_alarm_manager.dart';
+import 'package:audioplayers/audio_cache.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
@@ -54,6 +55,8 @@ class PoseNetApp extends StatelessWidget {
 // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final player = AudioCache(prefix: 'assets/');
+    player.loop('wakeup.wav');
     return MaterialApp(
       title: 'Wake Stand Stretch',
       home: Scaffold(
