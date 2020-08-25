@@ -22,19 +22,52 @@ final ReceivePort port = ReceivePort();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-// Register the UI isolate's SendPort to allow for communication from the
-// background isolate.
-  IsolateNameServer.registerPortWithName(
-    port.sendPort,
-    isolateName,
-  );
   _readAlarmTime() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     var data = pref.getString("alarmTime");
     return DateTime.parse(data);
   }
-  print(await _readAlarmTime());
-  runApp(WakeStandStretchApp());
+  bool _isAlarm(DateTime alarmTime) {
+    var now = new DateTime.now();
+    now = new DateTime(now.year, now.month, now.day, now.hour, now.minute);
+    if (alarmTime == now) {
+      return true;
+    }
+    return false;
+  }
+  var alarmTime = await _readAlarmTime();
+  if (_isAlarm(alarmTime)) {
+    runApp(PoseNetApp());
+  } else {
+    // Register the UI isolate's SendPort to allow for communication from the
+    // background isolate.
+    IsolateNameServer.registerPortWithName(
+      port.sendPort,
+      isolateName,
+    );
+
+    runApp(WakeStandStretchApp());
+  }
+}
+
+class PoseNetApp extends StatelessWidget {
+// This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Wake Stand Stretch',
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text("Pose Net App"),
+        ),
+        body: Center(
+          child: Text(
+            "Good Morning!\nLet's stand & stretch!",
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class WakeStandStretchApp extends StatelessWidget {
