@@ -50,6 +50,9 @@ class _HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<_HomePage> {
+  var _dayController = TextEditingController();
+  var _hourController = TextEditingController();
+  var _minuteController = TextEditingController();
 
   @override
   void initState() {
@@ -82,17 +85,21 @@ class _HomePageState extends State<_HomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              "Good Morning!",
+              "Alarm Setting",
               style: textStyle,
             ),
             RaisedButton(
               child: Text(
-                'Schedule OneShot Alarm',
+                'Schedule Alarm',
               ),
               key: ValueKey('RegisterOneShotAlarm'),
               onPressed: () async {
-                await AndroidAlarmManager.oneShot(
-                  const Duration(seconds: 10),
+                var _day = int.parse(_dayController.text);
+                var _hour = int.parse(_hourController.text);
+                var _minute = int.parse(_minuteController.text);
+
+                await AndroidAlarmManager.oneShotAt(
+                  DateTime(2020, 8, _day, _hour, _minute),
                   // Ensure we have a unique alarm ID.
                   Random().nextInt(pow(2, 31)),
                   callback,
@@ -100,6 +107,15 @@ class _HomePageState extends State<_HomePage> {
                   wakeup: true,
                 );
               },
+            ),
+            TextFormField(
+              controller: _dayController,
+            ),
+            TextFormField(
+              controller: _hourController,
+            ),
+            TextFormField(
+              controller: _minuteController,
             ),
           ],
         ),
