@@ -10,6 +10,8 @@ import 'package:audioplayers/audio_cache.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
+import 'package:wake_stand_strech/StopAlarmHome.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -28,13 +30,13 @@ Future<void> main() async {
   }
   var alarmTime = await _readAlarmTime();
   if (_isAlarm(alarmTime)) {
-    runApp(PoseNetApp());
+    runApp(StopAlarmApp());
   } else {
     runApp(WakeStandStretchApp());
   }
 }
 
-class PoseNetApp extends StatelessWidget {
+class StopAlarmApp extends StatelessWidget {
 // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -46,11 +48,7 @@ class PoseNetApp extends StatelessWidget {
         appBar: AppBar(
           title: Text("Pose Net App"),
         ),
-        body: Center(
-          child: Text(
-            "Good Morning!\nLet's stand & stretch!",
-          ),
-        ),
+        body: StopAlarmHome()
       ),
     );
   }
