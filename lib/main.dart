@@ -3,22 +3,12 @@
 // found in the LICENSE file.
 
 // ignore_for_file: public_member_api_docs
-
-import 'dart:isolate';
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
-
-/// The name associated with the UI isolate's [SendPort].
-const String isolateName = 'isolate';
-
-/// A port used to communicate from a background isolate to the UI isolate.
-final ReceivePort port = ReceivePort();
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,13 +30,6 @@ Future<void> main() async {
   if (_isAlarm(alarmTime)) {
     runApp(PoseNetApp());
   } else {
-    // Register the UI isolate's SendPort to allow for communication from the
-    // background isolate.
-    IsolateNameServer.registerPortWithName(
-      port.sendPort,
-      isolateName,
-    );
-
     runApp(WakeStandStretchApp());
   }
 }
@@ -103,16 +86,9 @@ class _HomePageState extends State<_HomePage> {
     AndroidAlarmManager.initialize();
   }
 
-// The background
-  static SendPort uiSendPort;
-
 // The callback for our alarm
   static Future<void> callback() async {
     print('Alarm fired!');
-
-// This will be null if we're running in the background.
-    uiSendPort ??= IsolateNameServer.lookupPortByName(isolateName);
-    uiSendPort?.send(null);
   }
 
   _saveAlarmTime(String datetime) async {
