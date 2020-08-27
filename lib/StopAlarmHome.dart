@@ -1,5 +1,7 @@
 import 'dart:math' as math;
 
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:tflite/tflite.dart';
@@ -21,6 +23,8 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
   int _imageHeight = 0;
   int _imageWidth = 0;
   CameraController controller;
+  AudioCache cache = new AudioCache(prefix: 'assets/');
+  AudioPlayer player;
 
   @override
   void initState() {
@@ -30,15 +34,24 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
       ResolutionPreset.ultraHigh,
     );
     controller.initialize();
+    _playFile();
     setState(() {
       _mode = "wakeUp";
     });
   }
 
+  void _playFile() async{
+    player = await cache.loop('wakeup.wav');
+  }
+
+  void _stopFile() {
+    player?.stop();
+  }
+
   stopAlarm(poseType) {
     switch (poseType) {
       case "Stretch":
-        print("Stretch");
+        _stopFile();
         break;
 
       default:
@@ -75,30 +88,30 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
   Widget build(BuildContext context) {
     Size screen = MediaQuery.of(context).size;
     return Center(
-        child:
-        _mode == "wakeUp" ?
-        RaisedButton(
-          child: Text("Stop Alarm!\nGo to Stretch"),
-          onPressed: () {
-            changeMode(_mode);
-            loadModel();
-          },
-        ):
-        Stack(
-          children: [
-            Camera(
-                widget.cameras,
-                setRecognitions
-            ),
-            BndBox(
-                _recognitions == null ? [] : _recognitions,
-                math.max(_imageHeight, _imageWidth),
-                math.min(_imageHeight, _imageWidth),
-                screen.height,
-                screen.width,
-            ),
-          ],
-        ),
+      child:
+      _mode == "wakeUp" ?
+      RaisedButton(
+        child: Text("Stop Alarm!\nGo to Stretch"),
+        onPressed: () {
+          changeMode(_mode);
+          loadModel();
+        },
+      ):
+      Stack(
+        children: [
+          Camera(
+              widget.cameras,
+              setRecognitions
+          ),
+          BndBox(
+            _recognitions == null ? [] : _recognitions,
+            math.max(_imageHeight, _imageWidth),
+            math.min(_imageHeight, _imageWidth),
+            screen.height,
+            screen.width,
+          ),
+        ],
+      ),
     );
   }
 }

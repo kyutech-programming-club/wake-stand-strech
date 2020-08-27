@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 // ignore_for_file: public_member_api_docs
-import 'package:audioplayers/audio_cache.dart';
 import 'package:camera/camera.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
@@ -48,8 +47,6 @@ class StopAlarmApp extends StatelessWidget {
 // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final player = AudioCache(prefix: 'assets/');
-    player.loop('wakeup.wav');
     return MaterialApp(
       title: 'Wake Stand Stretch',
       home: Scaffold(
