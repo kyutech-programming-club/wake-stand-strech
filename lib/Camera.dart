@@ -2,10 +2,13 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:tflite/tflite.dart';
 
+typedef void Callback(List<dynamic> list, int h, int w);
+
 class Camera extends StatefulWidget {
   final List<CameraDescription> cameras;
+  final Callback setRecognitions;
 
-  Camera(this.cameras);
+  Camera(this.cameras, this.setRecognitions);
 
   @override
   _CameraState createState() => new _CameraState();
@@ -48,6 +51,7 @@ class _CameraState extends State<Camera> {
               int endTime = new DateTime.now().millisecondsSinceEpoch;
               print("Detection took ${endTime - startTime}");
               print(recognitions);
+              widget.setRecognitions(recognitions, img.height, img.width);
               isDetecting = false;
             });
           }

@@ -14,6 +14,9 @@ class StopAlarmHome extends StatefulWidget {
 
 class _StopAlarmHomeState extends State<StopAlarmHome> {
   var _mode = "";
+  List<dynamic> _recognitions;
+  int _imageHeight = 0;
+  int _imageWidth = 0;
   CameraController controller;
 
   @override
@@ -45,6 +48,14 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
     print(res);
   }
 
+  setRecognitions(recognitions, imageHeight, imageWidth) {
+    setState(() {
+      _recognitions = recognitions;
+      _imageHeight = imageHeight;
+      _imageWidth = imageWidth;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -59,7 +70,10 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
         ):
         Stack(
           children: [
-            Camera(widget.cameras),
+            Camera(
+                widget.cameras,
+                setRecognitions
+            ),
           ],
         )
     );
