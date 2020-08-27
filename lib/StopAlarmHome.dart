@@ -1,8 +1,11 @@
+import 'dart:math' as math;
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:tflite/tflite.dart';
 
 import 'package:wake_stand_strech/Camera.dart';
+import 'package:wake_stand_strech/BndBox.dart';
 
 class StopAlarmHome extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -58,6 +61,7 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
 
   @override
   Widget build(BuildContext context) {
+    Size screen = MediaQuery.of(context).size;
     return Center(
         child:
         _mode == "wakeUp" ?
@@ -74,8 +78,15 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
                 widget.cameras,
                 setRecognitions
             ),
+            BndBox(
+                _recognitions == null ? [] : _recognitions,
+                math.max(_imageHeight, _imageWidth),
+                math.min(_imageHeight, _imageWidth),
+                screen.height,
+                screen.width,
+            ),
           ],
-        )
+        ),
     );
   }
 }
