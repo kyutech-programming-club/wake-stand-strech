@@ -1,7 +1,9 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
 class StopAlarmHome extends StatefulWidget {
-  StopAlarmHome();
+  final List<CameraDescription> cameras;
+  StopAlarmHome(this.cameras);
 
   @override
   _StopAlarmHomeState createState() => new _StopAlarmHomeState();
@@ -9,10 +11,16 @@ class StopAlarmHome extends StatefulWidget {
 
 class _StopAlarmHomeState extends State<StopAlarmHome> {
   var _mode = "";
+  CameraController controller;
 
   @override
   void initState() {
     super.initState();
+    controller = new CameraController(
+      widget.cameras[0],
+      ResolutionPreset.ultraHigh,
+    );
+    controller.initialize();
     setState(() {
       _mode = "wakeUp";
     });
@@ -30,13 +38,17 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child:
-      _mode == "wakeUp" ?
-      RaisedButton(
-        child: Text("Stop Alarm!\nGo to Stretch"),
-        onPressed: () => changeMode(_mode),
-      ):
-      Text("This is standUp mode page."),
+        child:
+        _mode == "wakeUp" ?
+        RaisedButton(
+          child: Text("Stop Alarm!\nGo to Stretch"),
+          onPressed: () => changeMode(_mode),
+        ):
+        Stack(
+          children: [
+            CameraPreview(controller),
+          ],
+        )
     );
   }
 }

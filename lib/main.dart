@@ -4,6 +4,7 @@
 
 // ignore_for_file: public_member_api_docs
 import 'package:audioplayers/audio_cache.dart';
+import 'package:camera/camera.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
@@ -28,13 +29,22 @@ Future<void> main() async {
   }
   var alarmTime = await _readAlarmTime();
   if (_isAlarm(alarmTime)) {
-    runApp(StopAlarmApp());
+    List<CameraDescription> cameras;
+    try {
+      cameras = await availableCameras();
+    } on CameraException catch (e) {
+      print('Error: $e.code\nError Message: $e.message');
+    }
+    runApp(StopAlarmApp(cameras));
   } else {
     runApp(SetAlarmApp());
   }
 }
 
 class StopAlarmApp extends StatelessWidget {
+  final List<CameraDescription> cameras;
+  StopAlarmApp(this.cameras);
+
 // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -43,10 +53,7 @@ class StopAlarmApp extends StatelessWidget {
     return MaterialApp(
       title: 'Wake Stand Stretch',
       home: Scaffold(
-        appBar: AppBar(
-          title: Text("Stop Alarm App"),
-        ),
-        body: StopAlarmHome()
+        body: StopAlarmHome(cameras),
       ),
     );
   }
