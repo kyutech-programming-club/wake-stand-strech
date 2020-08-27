@@ -35,6 +35,17 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
     });
   }
 
+  stopAlarm(poseType) {
+    switch (poseType) {
+      case "Stretch":
+        print("Stretch");
+        break;
+
+      default:
+        print("None");
+    }
+  }
+
   changeMode(mode) {
     switch (mode) {
       case "wakeUp":
@@ -51,7 +62,8 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
     print(res);
   }
 
-  setRecognitions(recognitions, imageHeight, imageWidth) {
+  setRecognitions(recognitions, imageHeight, imageWidth, poseType) {
+    stopAlarm(poseType);
     setState(() {
       _recognitions = recognitions;
       _imageHeight = imageHeight;

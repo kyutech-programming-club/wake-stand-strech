@@ -4,7 +4,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:tflite/tflite.dart';
 
-typedef void Callback(List<dynamic> list, int h, int w);
+typedef void Callback(List<dynamic> list, int h, int w, String poseType);
 
 class Camera extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -53,7 +53,10 @@ class _CameraState extends State<Camera> {
               int endTime = new DateTime.now().millisecondsSinceEpoch;
               print("Detection took ${endTime - startTime}");
               print(recognitions);
-              widget.setRecognitions(recognitions, img.height, img.width);
+
+              var poseType = checkPose(recognitions);
+              widget.setRecognitions(recognitions, img.height, img.width, poseType);
+
               isDetecting = false;
             });
           }
@@ -67,6 +70,20 @@ class _CameraState extends State<Camera> {
     await controller?.dispose();
     await Tflite.close(); //add to example
     super.dispose();
+  }
+
+  String checkPose(dynamic recognitions) {
+    if (recognitions.isEmpty) {
+      return "None";
+    }
+    var k = recognitions[0]["keypoints"];
+    print("k:$k");
+    bool isStretch = k[5]["y"] > k[7]["y"] && k[7]["y"] > k[9]["y"];
+    if (isStretch) {
+      print("stretch!!");
+      return "Stretch";
+    }
+    return "None";
   }
 
   @override
