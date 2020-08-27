@@ -1,5 +1,8 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:tflite/tflite.dart';
+
+import 'package:wake_stand_strech/Camera.dart';
 
 class StopAlarmHome extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -35,6 +38,13 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
     }
   }
 
+  loadModel() async {
+    String res;
+    res = await Tflite.loadModel(
+        model: "assets/posenet_mv1_075_float_from_checkpoints.tflite");
+    print(res);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -42,11 +52,14 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
         _mode == "wakeUp" ?
         RaisedButton(
           child: Text("Stop Alarm!\nGo to Stretch"),
-          onPressed: () => changeMode(_mode),
+          onPressed: () {
+            changeMode(_mode);
+            loadModel();
+          },
         ):
         Stack(
           children: [
-            CameraPreview(controller),
+            Camera(widget.cameras),
           ],
         )
     );
