@@ -127,6 +127,7 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
       changeMode(_mode);
       if (_mode == "finish") {
         player?.stop();
+        _playFile("finish");
         playerClassic?.stop();
       } else {
         player?.stop();

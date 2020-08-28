@@ -58,6 +58,7 @@ flutter:
     - assets/standingOnTiptoe.wav
     - assets/wakeUp.wav
     - assets/standUp.wav
+    - assets/finish.wav
     - assets/classic.mp3
     - assets/posenet_mv1_075_float_from_checkpoints.tflite
   #   - images/a_dot_burr.jpeg
