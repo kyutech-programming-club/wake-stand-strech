@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:async';
 
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -25,6 +26,11 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
   CameraController controller;
   AudioCache cache = new AudioCache(prefix: 'assets/');
   AudioPlayer player;
+  AudioCache cacheClassic = new AudioCache(prefix: 'assets/');
+  AudioPlayer playerClassic;
+  bool _isCameraActive = false;
+  AudioCache cacheGood = new AudioCache(prefix: 'assets/');
+  AudioPlayer playerGood;
 
   @override
   void initState() {
@@ -34,29 +40,32 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
       ResolutionPreset.ultraHigh,
     );
     controller.initialize();
-    _playFile();
+    _loopFile("wakeUp.wav");
     setState(() {
       _mode = "wakeUp";
     });
   }
 
-  void _playFile() async{
-    player = await cache.loop('wakeup.wav');
+  void _playFile(String fileName) async{
+    playerGood = await cacheGood.play(fileName+".wav");
   }
 
-  void _stopFile() {
-    player?.stop();
+  void _loopFile(String fileName) async {
+    player = await cache.loop(fileName);
   }
 
-  stopAlarm(poseType) {
-    switch (poseType) {
-      case "Stretch":
-        _stopFile();
-        break;
+  voice(mode) async{
+    await new Future.delayed(new Duration(seconds: 1));
+      _loopFile(mode + ".wav");
 
-      default:
-        print("None");
-    }
+      if (mode == "standingOnTiptoe") {
+        playerClassic = await cache.loop("classic.mp3", volume: 0.1);
+      }
+
+      if (mode == "leftSide") {
+        playerClassic?.stop();
+        playerClassic = await cache.loop("classic.mp3", volume: 0.3);
+      }
   }
 
   changeMode(mode) {
@@ -65,6 +74,33 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
         setState(() {
           _mode = "standUp";
         });
+        break;
+      case "standUp":
+        setState(() {
+          _mode = "standingOnTiptoe";
+        });
+        break;
+      case "standingOnTiptoe":
+        setState(() {
+          _mode = "rightSide";
+        });
+        break;
+      case "rightSide":
+        setState(() {
+          _mode = "leftSide";
+        });
+        break;
+      case "leftSide":
+        setState(() {
+          _mode = "bending";
+        });
+        break;
+      case "bending":
+        setState(() {
+          _mode = "finish";
+          //ここの動作を追加
+        });
+        break;
     }
   }
 
@@ -76,12 +112,35 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
   }
 
   setRecognitions(recognitions, imageHeight, imageWidth, poseType) {
-    stopAlarm(poseType);
     setState(() {
+      if (!_isCameraActive) {
+        _isCameraActive = true;
+        player?.stop();
+        voice(_mode);
+      }
       _recognitions = recognitions;
       _imageHeight = imageHeight;
       _imageWidth = imageWidth;
     });
+
+    if (_mode == poseType) {
+      changeMode(_mode);
+      if (_mode == "finish") {
+        player?.stop();
+        _playFile("finish");
+        playerClassic?.stop();
+      } else {
+        player?.stop();
+        _playFile("goodPose");
+        voice(_mode);
+      }
+    }
+
+    print("-----------------------------------------------------");
+    print(_mode);
+    print("-----------------------------------------------------");
+    print(poseType);
+    print("-----------------------------------------------------");
   }
 
   @override
@@ -96,8 +155,9 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
           changeMode(_mode);
           loadModel();
         },
-      ):
-      Stack(
+      ):_mode == "finish" ?
+      Text("おはよう")
+      :Stack(
         children: [
           Camera(
               widget.cameras,

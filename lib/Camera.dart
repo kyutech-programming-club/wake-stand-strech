@@ -55,7 +55,8 @@ class _CameraState extends State<Camera> {
               print(recognitions);
 
               var poseType = checkPose(recognitions);
-              widget.setRecognitions(recognitions, img.height, img.width, poseType);
+              widget.setRecognitions(
+                  recognitions, img.height, img.width, poseType);
 
               isDetecting = false;
             });
@@ -78,12 +79,33 @@ class _CameraState extends State<Camera> {
     }
     var k = recognitions[0]["keypoints"];
     print("k:$k");
-    bool isStretch = k[5]["y"] > k[7]["y"] && k[7]["y"] > k[9]["y"];
-    if (isStretch) {
-      print("stretch!!");
-      return "Stretch";
+    bool standUp = k[13]["y"] > k[11]["y"] && k[11]["y"] > k[5]["y"] &&
+        k[5]["y"] > k[0]["y"];
+    bool standingOnTiptoe = k[13]["y"] > k[11]["y"] && k[11]["y"] > k[5]["y"] &&
+        k[0]["y"] > k[7]["y"];
+    bool leftSide = k[10]["x"] > k[5]["x"] ;
+    bool rightSide = k[6]["x"] > k[9]["x"];
+    bool bending = k[11]["y"] > k[14]["y"] && k[12]["y"] > k[13]["y"] ;
+
+
+    if (bending) {
+      print("bending");
+      return "bending";
+    } else if (leftSide) {
+      print("leftSide");
+      return "leftSide";
+    } else if (rightSide) {
+      print("rightSide");
+      return "rightSide";
+    } else if (standingOnTiptoe) {
+      print("standingOnTiptoe");
+      return "standingOnTiptoe";
+    } else if (standUp) {
+      print("standUp");
+      return "standUp";
+    } else {
+      return "None";
     }
-    return "None";
   }
 
   @override
@@ -91,7 +113,9 @@ class _CameraState extends State<Camera> {
     if (controller == null || !controller.value.isInitialized) {
       return Container();
     }
-    var tmp = MediaQuery.of(context).size;
+    var tmp = MediaQuery
+        .of(context)
+        .size;
     var screenH = math.max(tmp.height, tmp.width);
     var screenW = math.min(tmp.height, tmp.width);
     tmp = controller.value.previewSize;
