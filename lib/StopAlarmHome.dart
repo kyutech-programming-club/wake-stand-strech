@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:async';
 
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -28,6 +29,8 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
   AudioCache cacheClassic = new AudioCache(prefix: 'assets/');
   AudioPlayer playerClassic;
   bool _isCameraActive = false;
+  AudioCache cacheGood = new AudioCache(prefix: 'assets/');
+  AudioPlayer playerGood;
 
   @override
   void initState() {
@@ -44,7 +47,7 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
   }
 
   void _playFile(String fileName) async{
-    player = await cache.play(fileName);
+    playerGood = await cacheGood.play(fileName+".wav");
   }
 
   void _loopFile(String fileName) async {
@@ -52,13 +55,18 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
   }
 
   voice(mode) async{
+    await new Future.delayed(new Duration(seconds: 1));
       _loopFile(mode + ".wav");
 
       if (mode == "standingOnTiptoe") {
         playerClassic = await cache.loop("classic.mp3", volume: 0.1);
       }
-  }
 
+      if (mode == "leftSide") {
+        playerClassic?.stop();
+        playerClassic = await cache.loop("classic.mp3", volume: 0.3);
+      }
+  }
 
   changeMode(mode) {
     switch (mode) {
