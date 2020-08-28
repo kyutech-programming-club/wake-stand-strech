@@ -52,12 +52,10 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
   }
 
   voice(mode) async{
-      _playFile(mode + ".wav");
       _loopFile(mode + ".wav");
 
       if (mode == "standingOnTiptoe") {
-        playerClassic = await cache.play("classic.mp3");
-        playerClassic = await cache.loop("classic.mp3");
+        playerClassic = await cache.loop("classic.mp3", volume: 0.1);
       }
   }
 
