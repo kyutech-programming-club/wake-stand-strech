@@ -87,7 +87,7 @@ class _CameraState extends State<Camera> {
         k[5]["y"] > k[13]["y"];
     bool rightSide = k[9]["y"] > k[0]["y"] && k[6]["x"] > k[9]["x"] &&
         k[5]["y"] > k[13]["y"];
-    bool bending = k[11]["y"] > k[14]["y"] && k[12]["y"] > k[13]["y"];
+    bool bending = k[11]["y"] > k[14]["y"] && k[12]["y"] > k[13]["y"] && k[11]["y"] > k[14]["y"];
 
 
     if (bending) {
