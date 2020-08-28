@@ -25,10 +25,9 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
   CameraController controller;
   AudioCache cache = new AudioCache(prefix: 'assets/');
   AudioPlayer player;
+  AudioCache cacheClassic = new AudioCache(prefix: 'assets/');
+  AudioPlayer playerClassic;
   bool _isCameraActive = false;
-  bool _isFinished = false;
-  int _count = 1;
-  int _classicNum = 0;
 
   @override
   void initState() {
@@ -52,13 +51,14 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
     player = await cache.loop(fileName);
   }
 
-  voice(mode) {
-    if (_count % 3 == 0) {
+  voice(mode) async{
       _playFile(mode + ".wav");
-      setState(() {
-        _count = 1;
-      });
-    }
+      _loopFile(mode + ".wav");
+
+      if (mode == "standingOnTiptoe") {
+        playerClassic = await cache.play("classic.mp3");
+        playerClassic = await cache.loop("classic.mp3");
+      }
   }
 
 
@@ -106,40 +106,27 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
   }
 
   setRecognitions(recognitions, imageHeight, imageWidth, poseType) {
-    if (_mode == "standUp") {
-      _classicNum = 1;
-    }
-    if (_classicNum == 1 && _mode == "standingOnTiptoe") {
-      //クラシック流す
-      _playFile("classic.mp3");
-      _loopFile("classic.mp3");
-    }
-
     setState(() {
       if (!_isCameraActive) {
         _isCameraActive = true;
         player?.stop();
+        voice(_mode);
       }
-      if (_mode == "standingOnTiptoe") {
-        _classicNum = 0;
-      }
-      _count += 1;
       _recognitions = recognitions;
       _imageHeight = imageHeight;
       _imageWidth = imageWidth;
     });
 
-
-    if (_mode == "finish") {
-      setState(() {
-        _isFinished = true;
-
-      });
-    } else if (_mode == poseType) {
+    if (_mode == poseType) {
       changeMode(_mode);
-      voice("goodPose");
-    } else {
-      voice(_mode);
+      if (_mode == "finish") {
+        player?.stop();
+        playerClassic?.stop();
+      } else {
+        player?.stop();
+        _playFile("goodPose");
+        voice(_mode);
+      }
     }
 
     print("-----------------------------------------------------");
@@ -161,7 +148,7 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
           changeMode(_mode);
           loadModel();
         },
-      ):_mode == "finish"?
+      ):_mode == "finish" ?
       Text("おはよう")
       :Stack(
         children: [
