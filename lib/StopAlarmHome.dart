@@ -86,6 +86,12 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
           _mode = "bending";
         });
         break;
+      case "bending":
+        setState(() {
+          _mode = "finish";
+          //ここの動作を追加
+        });
+        break;
     }
   }
 
