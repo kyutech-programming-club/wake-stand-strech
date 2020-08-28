@@ -118,6 +118,8 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
     print("-----------------------------------------------------");
     print(_mode);
     print("-----------------------------------------------------");
+    print(poseType);
+    print("-----------------------------------------------------");
   }
 
   @override
