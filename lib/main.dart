@@ -26,8 +26,18 @@ Future<void> main() async {
     }
     return false;
   }
-  var alarmTime = await _readAlarmTime();
-  if (_isAlarm(alarmTime)) {
+//  var alarmTime = await _readAlarmTime();
+//  if (_isAlarm(alarmTime)) {
+//    List<CameraDescription> cameras;
+//    try {
+//      cameras = await availableCameras();
+//    } on CameraException catch (e) {
+//      print('Error: $e.code\nError Message: $e.message');
+//    }
+//    runApp(StopAlarmApp(cameras));
+//  } else {
+//    runApp(SetAlarmApp());
+//  }
     List<CameraDescription> cameras;
     try {
       cameras = await availableCameras();
@@ -35,9 +45,6 @@ Future<void> main() async {
       print('Error: $e.code\nError Message: $e.message');
     }
     runApp(StopAlarmApp(cameras));
-  } else {
-    runApp(SetAlarmApp());
-  }
 }
 
 class StopAlarmApp extends StatelessWidget {
