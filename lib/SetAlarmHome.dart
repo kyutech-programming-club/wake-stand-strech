@@ -80,7 +80,7 @@ class _SetAlarmHomeState extends State<SetAlarmHome> {
               // フォーマッターを使用して指定したフォーマットで日時を表示
               // format()に渡すのはDate型の値で、String型で返される
               formatter.format(_myDateTime),
-              style: Theme.of(context).textTheme.display1,
+              style: Theme.of(context).textTheme.headline3,
             ),
             FloatingActionButton(
               onPressed: () {
@@ -89,7 +89,7 @@ class _SetAlarmHomeState extends State<SetAlarmHome> {
                   showTitleActions: true,
                   // onChanged内の処理はDatepickerの選択に応じて毎回呼び出される
                   onChanged: (date) {
-//                     print('change $date');
+                  //   print('change $date');
                   },
                   // onConfirm内の処理はDatepickerで選択完了後に呼び出される
                   onConfirm: (date) {
