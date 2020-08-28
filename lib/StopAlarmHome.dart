@@ -26,6 +26,7 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
   AudioCache cache = new AudioCache(prefix: 'assets/');
   AudioPlayer player;
   bool _isCameraActive = false;
+  bool _isFinished = false;
   int _count = 1;
   int _classicNum = 0;
 
@@ -104,7 +105,7 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
     print(res);
   }
 
-  setRecognitions(recognitions, imageHeight, imageWidth, poseType, context) {
+  setRecognitions(recognitions, imageHeight, imageWidth, poseType) {
     if (_mode == "standUp") {
       _classicNum = 1;
     }
@@ -130,20 +131,10 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
 
 
     if (_mode == "finish") {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (BuildContext context) {
-            return Scaffold(
-              appBar: AppBar(title: Text("おつかれちゃん")),
-              body: Center(
-                child: Text("おはようおはよう"),
-              ),
-            );
-          },
-          fullscreenDialog: true
-        )
-      );
+      setState(() {
+        _isFinished = true;
+
+      });
     } else if (_mode == poseType) {
       changeMode(_mode);
       voice("goodPose");
@@ -170,8 +161,9 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
           changeMode(_mode);
           loadModel();
         },
-      ):
-      Stack(
+      ):_mode == "finish"?
+      Text("おはよう")
+      :Stack(
         children: [
           Camera(
               widget.cameras,
