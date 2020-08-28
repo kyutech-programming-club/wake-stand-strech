@@ -3,7 +3,8 @@ import 'dart:math';
 import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:intl/intl.dart';
 
 class SetAlarmHome extends StatefulWidget {
   SetAlarmHome({Key key, this.title}) : super(key: key);
@@ -14,9 +15,8 @@ class SetAlarmHome extends StatefulWidget {
 }
 
 class _SetAlarmHomeState extends State<SetAlarmHome> {
-  var _dayController = TextEditingController();
-  var _hourController = TextEditingController();
-  var _minuteController = TextEditingController();
+  var _myDateTime = new DateTime.now();
+  var formatter = new DateFormat('yyyy-MM-dd HH:mm');
 
   @override
   void initState() {
@@ -55,11 +55,12 @@ class _SetAlarmHomeState extends State<SetAlarmHome> {
               ),
               key: ValueKey('RegisterOneShotAlarm'),
               onPressed: () async {
-                var _day = int.parse(_dayController.text);
-                var _hour = int.parse(_hourController.text);
-                var _minute = int.parse(_minuteController.text);
-
-                var _alarmTime = DateTime(2020, 8, _day, _hour, _minute);
+                var _date = DateTime.parse(formatter.format(_myDateTime)+":00");
+                var _month = _date.month;
+                var _day = _date.day;
+                var _hour = _date.hour;
+                var _minute = _date.minute;
+                var _alarmTime = DateTime(2020, _month, _day, _hour, _minute);
 
                 await AndroidAlarmManager.oneShotAt(
                   _alarmTime,
@@ -72,14 +73,39 @@ class _SetAlarmHomeState extends State<SetAlarmHome> {
                 _saveAlarmTime(_alarmTime.toString());
               },
             ),
-            TextFormField(
-              controller: _dayController,
+            Text(
+              'あなたが選択した日時は以下です: ',
             ),
-            TextFormField(
-              controller: _hourController,
+            Text(
+              // フォーマッターを使用して指定したフォーマットで日時を表示
+              // format()に渡すのはDate型の値で、String型で返される
+              formatter.format(_myDateTime),
+              style: Theme.of(context).textTheme.display1,
             ),
-            TextFormField(
-              controller: _minuteController,
+            FloatingActionButton(
+              onPressed: () {
+                DatePicker.showDateTimePicker(
+                  context,
+                  showTitleActions: true,
+                  // onChanged内の処理はDatepickerの選択に応じて毎回呼び出される
+                  onChanged: (date) {
+//                     print('change $date');
+                  },
+                  // onConfirm内の処理はDatepickerで選択完了後に呼び出される
+                  onConfirm: (date) {
+                    setState(() {
+                      _myDateTime = date;
+                    });
+                    print(date);
+                  },
+                  // Datepickerのデフォルトで表示する日時
+                  currentTime: DateTime.now(),
+                  // localによって色々な言語に対応
+                  //  locale: LocaleType.en
+                );
+              },
+              tooltip: 'Datetime',
+              child: Icon(Icons.access_time),
             ),
           ],
         ),
