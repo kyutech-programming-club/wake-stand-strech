@@ -55,7 +55,7 @@ class _SetAlarmHomeState extends State<SetAlarmHome> {
               ),
               key: ValueKey('RegisterOneShotAlarm'),
               onPressed: () async {
-                var _date = DateTime.parse(formatter.format(_myDateTime)+":00");
+                var _date = DateTime.parse(formatter.format(_myDateTime));
                 var _month = _date.month;
                 var _day = _date.day;
                 var _hour = _date.hour;
