@@ -36,7 +36,7 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
       ResolutionPreset.ultraHigh,
     );
     controller.initialize();
-    _loopFile("wakeup.wav");
+    _loopFile("wakeUp.wav");
     setState(() {
       _mode = "wakeUp";
     });
@@ -50,9 +50,9 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
     player = await cache.loop(fileName);
   }
 
-  voice() {
+  voice(mode) {
     if (_count % 3 == 0) {
-      _playFile("standup.wav");
+      _playFile(mode + ".wav");
       setState(() {
         _count = 1;
       });
@@ -107,7 +107,17 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
       _imageHeight = imageHeight;
       _imageWidth = imageWidth;
     });
-    voice();
+
+    if (_mode == poseType) {
+      changeMode(_mode);
+      voice("goodPose");
+    } else {
+      voice(_mode);
+    }
+
+    print("-----------------------------------------------------");
+    print(_mode);
+    print("-----------------------------------------------------");
   }
 
   @override
