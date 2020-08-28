@@ -27,6 +27,7 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
   AudioPlayer player;
   bool _isCameraActive = false;
   int _count = 1;
+  int _classicNum = 0;
 
   @override
   void initState() {
@@ -58,6 +59,7 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
       });
     }
   }
+
 
   changeMode(mode) {
     switch (mode) {
@@ -102,11 +104,23 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
     print(res);
   }
 
-  setRecognitions(recognitions, imageHeight, imageWidth, poseType) {
+  setRecognitions(recognitions, imageHeight, imageWidth, poseType, context) {
+    if (_mode == "standUp") {
+      _classicNum = 1;
+    }
+    if (_classicNum == 1 && _mode == "standingOnTiptoe") {
+      //クラシック流す
+      _playFile("classic.mp3");
+      _loopFile("classic.mp3");
+    }
+
     setState(() {
       if (!_isCameraActive) {
         _isCameraActive = true;
         player?.stop();
+      }
+      if (_mode == "standingOnTiptoe") {
+        _classicNum = 0;
       }
       _count += 1;
       _recognitions = recognitions;
@@ -114,7 +128,23 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
       _imageWidth = imageWidth;
     });
 
-    if (_mode == poseType) {
+
+    if (_mode == "finish") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) {
+            return Scaffold(
+              appBar: AppBar(title: Text("おつかれちゃん")),
+              body: Center(
+                child: Text("おはようおはよう"),
+              ),
+            );
+          },
+          fullscreenDialog: true
+        )
+      );
+    } else if (_mode == poseType) {
       changeMode(_mode);
       voice("goodPose");
     } else {
