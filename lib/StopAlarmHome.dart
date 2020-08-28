@@ -25,6 +25,7 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
   CameraController controller;
   AudioCache cache = new AudioCache(prefix: 'assets/');
   AudioPlayer player;
+  bool _isCameraActive = false;
 
   @override
   void initState() {
@@ -34,7 +35,7 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
       ResolutionPreset.ultraHigh,
     );
     controller.initialize();
-    _playFile();
+    _loopFile("wakeup.wav");
     setState(() {
       _mode = "wakeUp";
     });
@@ -44,19 +45,8 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
     player = await cache.loop('wakeup.wav');
   }
 
-  void _stopFile() {
-    player?.stop();
-  }
-
-  stopAlarm(poseType) {
-    switch (poseType) {
-      case "Stretch":
-        _stopFile();
-        break;
-
-      default:
-        print("None");
-    }
+  void _loopFile(String fileName) async {
+    player = await cache.loop(fileName);
   }
 
   changeMode(mode) {
@@ -76,8 +66,11 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
   }
 
   setRecognitions(recognitions, imageHeight, imageWidth, poseType) {
-    stopAlarm(poseType);
     setState(() {
+      if (!_isCameraActive) {
+        _isCameraActive = true;
+        player?.stop();
+      }
       _recognitions = recognitions;
       _imageHeight = imageHeight;
       _imageWidth = imageWidth;
