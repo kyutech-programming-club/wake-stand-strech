@@ -15,7 +15,7 @@ Future<void> main() async {
 
   _readAlarmTime() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    var data = pref.getString("alarmTime");
+    var data = pref.getString("alarmTime") ?? "2020-08-29 13:00:00.000";//default alarm time
     return DateTime.parse(data);
   }
   bool _isAlarm(DateTime alarmTime) {
