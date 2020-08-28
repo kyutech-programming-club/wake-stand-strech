@@ -82,15 +82,15 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
         break;
       case "standingOnTiptoe":
         setState(() {
-          _mode = "leftSide";
-        });
-        break;
-      case "leftSide":
-        setState(() {
           _mode = "rightSide";
         });
         break;
       case "rightSide":
+        setState(() {
+          _mode = "leftSide";
+        });
+        break;
+      case "leftSide":
         setState(() {
           _mode = "bending";
         });
