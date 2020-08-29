@@ -38,13 +38,6 @@ Future<void> main() async {
   } else {
     runApp(SetAlarmApp());
   }
-//    List<CameraDescription> cameras;
-//    try {
-//      cameras = await availableCameras();
-//    } on CameraException catch (e) {
-//      print('Error: $e.code\nError Message: $e.message');
-//    }
-//    runApp(StopAlarmApp(cameras));
 }
 
 class StopAlarmApp extends StatelessWidget {
