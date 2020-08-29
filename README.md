@@ -1,16 +1,30 @@
 # wake_stand_strech
 
-A new Flutter project.
+起きて、立って、伸びて
 
-## Getting Started
+## お目覚めのストレッチで快適な目覚めを...
 
-This project is a starting point for a Flutter application.
+## 製品概要
+このアプリはストレッチによってアラームを操作でき、あなたの快適な目覚めをサポートします
 
-A few resources to get you started if this is your first Flutter project:
+## 使用方法
+1.起きたい時間にアラームをセットする
+2.アラームがなったら音声ガイドに従ってストレッチを行う
+3.すべてのストレッチを行うと修了
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## 本製品の特徴
+・体を動かしてタイマーを止めることで二度寝防止に
+・クラシック音楽でリラックス効果を
+・音でガイドを行うためメガネやコンタクト使用者にも優しい
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 使用技術
+
+### フレームワーク
+・Flutter
+
+### 姿勢推定（骨格検出）
+・TensorFlow Lite　（Posesnet）
+
+## 音楽素材
+クラシック名曲サウンドライブラリー http://classical-sound.seesaa.net/
+
