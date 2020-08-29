@@ -56,16 +56,16 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
 
   voice(mode) async{
     await new Future.delayed(new Duration(seconds: 1));
-      _loopFile(mode + ".wav");
+    _loopFile(mode + ".wav");
 
-      if (mode == "standingOnTiptoe") {
-        playerClassic = await cache.loop("classic.mp3", volume: 0.1);
-      }
+    if (mode == "standingOnTiptoe") {
+      playerClassic = await cache.loop("classic.mp3", volume: 0.1);
+    }
 
-      if (mode == "leftSide") {
-        playerClassic?.stop();
-        playerClassic = await cache.loop("classic.mp3", volume: 0.3);
-      }
+    if (mode == "leftSide") {
+      playerClassic?.stop();
+      playerClassic = await cache.loop("classic.mp3", volume: 0.3);
+    }
   }
 
   changeMode(mode) {
@@ -150,14 +150,23 @@ class _StopAlarmHomeState extends State<StopAlarmHome> {
       child:
       _mode == "wakeUp" ?
       RaisedButton(
-        child: Text("Stop Alarm!\nGo to Stretch"),
+        color: Colors.lightGreen,
+        splashColor: Colors.green,
+        child: Text("Stop Alarm!",
+          style: TextStyle(
+            fontFamily: 'JockeyOne',
+            fontWeight: FontWeight.bold,
+            fontSize: 50,
+            color: Colors.white,
+          ),
+        ),
         onPressed: () {
           changeMode(_mode);
           loadModel();
         },
       ):_mode == "finish" ?
       Text("おはよう")
-      :Stack(
+          :Stack(
         children: [
           Camera(
               widget.cameras,
